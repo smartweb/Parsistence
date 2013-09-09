@@ -29,7 +29,7 @@ p.body = "trololol"
 p.saveEventually
 ```
 
-`Parsistence::Model` objects will `respond_to?` to all methods available to [`PFObject`](https://parse.com/docs/ios/api/Classes/PFObject.html) in the Parse iOS SDK, as well as 'fields' getters and setters. You can also access the `PFObject` instance directly with, you guessed it, `Parsistence::Model#PFObject`.
+`Parsistence::Model` objects will `respond_to?` to all methods available to [`AVObject`](read more in the AVOSCloud iOS SDK, as well as 'fields' getters and setters. You can also access the `AVObject` instance directly with, you guessed it, `Parsistence::Model#AVObject`.
 
 ### Users
 
@@ -48,7 +48,7 @@ users = User.all
 users.map {|u| u.objectId}.include?(user.objectId) #=> true
 ```
 
-`Parsistence::User` delegates to `PFUser` in a very similar fashion as `Parsistence::Model` delegates to `PFOBject`. `Parsistence::User` includes `Parsistence::Model`, in fact.
+`Parsistence::User` delegates to `AVUser` in a very similar fashion as `Parsistence::Model` delegates to `AVOBject`. `Parsistence::User` includes `Parsistence::Model`, in fact.
 
 ### Queries
 
