@@ -2,31 +2,31 @@ module Parsistence
   module User
     include Parsistence::Model
 
-    attr_accessor :PFUser
+    attr_accessor :AVUser
     
     RESERVED_KEYS = [:objectId, :username, :password, :email]
 
     def initialize(pf=nil)
       if pf
-        self.PFObject = pf
+        self.AVObject = pf
       else
-        self.PFObject = PFUser.new
+        self.AVObject = AVUser.new
       end
 
       self
     end
     
-    def PFObject=(value)
-      @PFObject = value
-      @PFUser = @PFObject
+    def AVObject=(value)
+      @AVObject = value
+      @AVUser = @AVObject
     end
     
-    def PFUser=(value)
-      self.PFObject = value
+    def AVUser=(value)
+      self.AVObject = value
     end
 
     def password=(value)
-      self.PFUser.password = value
+      self.AVUser.password = value
     end
 
     def signUp
@@ -37,7 +37,7 @@ module Parsistence
         if @errors && @errors.length > 0
           saved = false
         else
-          saved = @PFObject.signUp
+          saved = @AVObject.signUp
         end
 
         after_save if saved
@@ -49,26 +49,26 @@ module Parsistence
       include Parsistence::Model::ClassMethods
 
       def all
-        query = PFQuery.queryForUser
+        query = AVQuery.queryForUser
         users = query.findObjects
         users
       end
       
       def currentUser
-        return PFUser.currentUser if PFUser.currentUser
+        return AVUser.currentUser if AVUser.currentUser
         nil
       end
 
       def current_user
-        if PFUser.currentUser
-          return @current_user ||= self.new(PFUser.currentUser)
+        if AVUser.currentUser
+          return @current_user ||= self.new(AVUser.currentUser)
         end
         nil
       end
 
       def log_out
         @current_user = nil
-        PFUser.logOut
+        AVUser.logOut
       end
     end
 
