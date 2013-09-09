@@ -1,14 +1,14 @@
 module Parsistence
   module Model
-    attr_accessor :PFObject, :errors
+    attr_accessor :AVObject, :errors
     
     RESERVED_KEYS = [:objectId]
 
-    def initialize(pf=nil)
-      if pf
-        self.PFObject = pf
+    def initialize(av=nil)
+      if av
+        self.AVObject = av
       else
-        self.PFObject = PFObject.objectWithClassName(self.class.to_s)
+        self.AVObject = AVObject.objectWithClassName(self.class.to_s)
       end
 
       self
@@ -25,22 +25,22 @@ module Parsistence
 
       # Setters
       if RESERVED_KEYS.include?(method) && setter
-        return self.PFObject.send("#{method}=", args)
+        return self.AVObject.send("#{method}=", args)
       elsif relations.include?(method) && setter
         return setRelation(method, args.first)
       elsif fields.include?(method) && setter
         return setField(method, args.first)
       # Getters
       elsif RESERVED_KEYS.include?(method)
-        return self.PFObject.send(method)
+        return self.AVObject.send(method)
       elsif relations.include? method
         return getRelation(method)
       elsif fields.include? method
         return getField(method)
-      elsif self.PFObject.respond_to?("#{method}=")
-        return self.PFObject.send("#{method}=", *args, &block)
-      elsif self.PFObject.respond_to?(method)
-        return self.PFObject.send(method, *args, &block)
+      elsif self.AVObject.respond_to?("#{method}=")
+        return self.AVObject.send("#{method}=", *args, &block)
+      elsif self.AVObject.respond_to?(method)
+        return self.AVObject.send(method, *args, &block)
       else
         super
       end
@@ -80,16 +80,16 @@ module Parsistence
 
     def getField(field)
       field = field.to_sym
-      return @PFObject.send(field) if RESERVED_KEYS.include?(field)
-      return @PFObject[field] if fields.include? field
+      return @AVObject.send(field) if RESERVED_KEYS.include?(field)
+      return @AVObject[field] if fields.include? field
       raise "Parsistence Exception: Invalid field name #{field} for object #{self.class.to_s}"
     end
 
     def setField(field, value)
       if RESERVED_KEYS.include?(field) || fields.include?(field.to_sym)
-        return @PFObject.removeObjectForKey(field.to_s) if value.nil?
-        return @PFObject.send("#{field}=", value) if RESERVED_KEYS.include?(field)
-        return @PFObject[field] = value
+        return @AVObject.removeObjectForKey(field.to_s) if value.nil?
+        return @AVObject.send("#{field}=", value) if RESERVED_KEYS.include?(field)
+        return @AVObject[field] = value
       else
         raise "Parsistence Exception: Invalid field name #{field} for object #{self.class.to_s}"
       end
@@ -97,7 +97,7 @@ module Parsistence
 
     def getRelation(field)
       if has_many.include?(field.to_sym)
-        relation = @PFObject.objectForKey(field) if relations.include? field.to_sym
+        relation = @AVObject.objectForKey(field) if relations.include? field.to_sym
         # This is not implemented yet
         # return @relation[field] ||= begin
         #   r = Relation.new(relation)
@@ -114,9 +114,9 @@ module Parsistence
     end
 
     def setRelation(field, value)
-      value = value.PFObject if value.respond_to? :PFObject # unwrap object
+      value = value.AVObject if value.respond_to? :AVObject # unwrap object
       if has_many.include?(field.to_sym)
-        relation = @PFObject.relationforKey(field)
+        relation = @AVObject.relationforKey(field)
         if value.nil?
           # Can't do it
           raise "Can't set nil for has_many relation."
@@ -148,7 +148,7 @@ module Parsistence
     # @note will throw an error if a key is invalid
     def attributes=(attrs)
       attrs.each do |k, v|
-        if v.respond_to?(:each) && !v.is_a?(PFObject)
+        if v.respond_to?(:each) && !v.is_a?(AVObject)
           self.attributes = v
         elsif self.respond_to? "#{k}="
           self.send("#{k}=", v) 
@@ -161,7 +161,7 @@ module Parsistence
     # Save the current state of the Model to Parse
     #
     # @note calls before/after_save hooks
-    # @note before_save MUST return true, or save will not be called on PFObject
+    # @note before_save MUST return true, or save will not be called on AVObject
     # @note does not save if validations fail
     # 
     # @return [Bool] true/false
@@ -173,7 +173,7 @@ module Parsistence
         if @errors && @errors.length > 0
           saved = false
         else
-          saved = @PFObject.save
+          saved = @AVObject.save
         end
 
         after_save if saved
@@ -202,7 +202,7 @@ module Parsistence
     def delete
       deleted = false
       unless before_delete == false
-        deleted = @PFObject.delete
+        deleted = @AVObject.delete
       end
       after_delete if deleted
       deleted
