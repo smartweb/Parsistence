@@ -208,10 +208,41 @@ Either `gem install Parsistence` then `require 'Parsistence'` in your `Rakefile`
 Somewhere in your code, such as `app/app_delegate.rb` set your API keys:
 
 ```ruby
-Parse.setApplicationId("1234567890", clientKey:"abcdefghijk")
+AVOSCloud.setApplicationId(AVOS_APP_ID, clientKey:AVOS_APP_KEY)
 ```
 
-To install the Parse iOS SDK in your RubyMotion project, read [this](http://www.rubymotion.com/developer-center/guides/project-management/#_using_3rd_party_libraries) and  [this](http://stackoverflow.com/a/10453895/94154).
+To install the AVOSCloud iOS SDK in your RubyMotion project, 
+copy the code below to Rakefile, and download AVOSCloud.framework from AVOSCloud website, put in the Vendor folder
+```ruby
+  app.libs << '/usr/lib/libz.1.1.3.dylib'
+  app.libs << '/usr/lib/libsqlite3.dylib'
+
+
+  app.frameworks += [
+    'AudioToolbox',
+    'CFNetwork',
+    'CoreGraphics',
+    'CoreLocation',
+    'MobileCoreServices',
+    'QuartzCore',
+    'Security',
+    'StoreKit',
+    'SystemConfiguration']
+ 
+ app.weak_frameworks += ['Accounts',
+    'AdSupport',
+    'Social']
+
+  # app.vendor_project('vendor/Parse.framework', 
+  #                     :static, 
+  #                     :products => ['Parse'], 
+  #                     :headers_dir => 'Headers')
+
+  app.vendor_project('vendor/AVOSCloud.framework', 
+                      :static, 
+                      :products => ['AVOSCloud'], 
+                      :headers_dir => 'Headers')
+```            
 
 ## License
 
