@@ -91,9 +91,9 @@ module Parsistence
 
     def createQuery
       if self.klass.to_s == "User"
-        query = PFUser.query
+        query = AVUser.query
       else
-        query = PFQuery.queryWithClassName(self.klass.to_s)
+        query = AVQuery.queryWithClassName(self.klass.to_s)
       end
 
       if @cached == true
@@ -110,37 +110,37 @@ module Parsistence
       
       @conditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:PFObject)
         query.whereKey(key, equalTo: value)
       end
       @inConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, containedIn: value)
       end
       @negativeConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, notEqualTo: value)
       end
       @ltConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, lessThan: value)
       end
       @gtConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, greaterThan: value)
       end
       @lteConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, lessThanOrEqualTo: value)
       end
       @gteConditions.each do |key, value|
         checkKey key
-        value = value.PFObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, greaterThanOrEqualTo: value)
       end
       first = true
