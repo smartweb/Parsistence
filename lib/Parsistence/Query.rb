@@ -110,7 +110,7 @@ module Parsistence
       
       @conditions.each do |key, value|
         checkKey key
-        value = value.AVObject if value.respond_to?(:PFObject)
+        value = value.AVObject if value.respond_to?(:AVObject)
         query.whereKey(key, equalTo: value)
       end
       @inConditions.each do |key, value|
